@@ -155,6 +155,3 @@ Use the provided Postman collection for API testing:
 - Collection: `[271] OpenJob API Test V1.postman_collection.json`
 - Environment: `OpenJob API.postman_environment.json`
 
-## License
-
-ISC
