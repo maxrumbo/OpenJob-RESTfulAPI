@@ -7,7 +7,7 @@ const validate = (schema, property = 'body') => {
 
     if (error) {
       const message = error.details.map((detail) => detail.message).join(', ');
-      throw new InvariantError(message);
+      return next(new InvariantError(message));
     }
 
     next();

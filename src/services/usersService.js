@@ -5,11 +5,11 @@ const InvariantError = require('../utils/InvariantError');
 const NotFoundError = require('../utils/NotFoundError');
 const AuthenticationError = require('../utils/AuthenticationError');
 
-const addUser = async ({ username, email, password, fullname }) => {
+const addUser = async ({ name, email, password, role }) => {
   // Check if username already exists
   const checkUsername = await pool.query(
     'SELECT id FROM users WHERE username = $1',
-    [username],
+    [name],
   );
   if (checkUsername.rows.length > 0) {
     throw new InvariantError('Username already exists');
@@ -30,7 +30,7 @@ const addUser = async ({ username, email, password, fullname }) => {
   const result = await pool.query(
     `INSERT INTO users (id, username, email, password, fullname)
      VALUES ($1, $2, $3, $4, $5) RETURNING id`,
-    [id, username, email, hashedPassword, fullname],
+    [id, name, email, hashedPassword, name],
   );
 
   if (!result.rows.length) {

@@ -2,13 +2,13 @@ const usersService = require('../services/usersService');
 
 const registerUser = async (req, res, next) => {
   try {
-    const { username, email, password, fullname } = req.body;
-    const userId = await usersService.addUser({ username, email, password, fullname });
+    const { name, email, password, role } = req.body;
+    const userId = await usersService.addUser({ name, email, password, role });
 
     return res.status(201).json({
       status: 'success',
       message: 'User registered successfully',
-      data: { userId },
+      data: { id: userId },
     });
   } catch (error) {
     return next(error);
