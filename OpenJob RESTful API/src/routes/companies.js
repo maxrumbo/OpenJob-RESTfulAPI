@@ -9,6 +9,32 @@ const { companySchema } = require('../validators/companies');
 
 const router = express.Router();
 
+/**
+ * @swagger
+ * /companies:
+ *   get:
+ *     summary: Get all companies
+ *     tags:
+ *       - Companies
+ *     responses:
+ *       200:
+ *         description: List of companies
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "success"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     companies:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ */
 router.get(
   '/',
   asyncHandler(async (req, res) => {
@@ -23,6 +49,26 @@ router.get(
   }),
 );
 
+/**
+ * @swagger
+ * /companies/{id}:
+ *   get:
+ *     summary: Get company by ID
+ *     tags:
+ *       - Companies
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Company ID
+ *     responses:
+ *       200:
+ *         description: Company details
+ *       404:
+ *         description: Company not found
+ */
 router.get(
   '/:id',
   asyncHandler(async (req, res) => {
@@ -46,6 +92,35 @@ router.get(
   }),
 );
 
+/**
+ * @swagger
+ * /companies:
+ *   post:
+ *     summary: Create a new company
+ *     tags:
+ *       - Companies
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - description
+ *             properties:
+ *               name:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Company created successfully
+ *       401:
+ *         description: Unauthorized
+ */
 router.post(
   '/',
   authenticate,
@@ -64,6 +139,40 @@ router.post(
   }),
 );
 
+/**
+ * @swagger
+ * /companies/{id}:
+ *   put:
+ *     summary: Update company by ID
+ *     tags:
+ *       - Companies
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Company updated successfully
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Company not found
+ */
 router.put(
   '/:id',
   authenticate,
@@ -79,6 +188,29 @@ router.put(
   }),
 );
 
+/**
+ * @swagger
+ * /companies/{id}:
+ *   delete:
+ *     summary: Delete company by ID
+ *     tags:
+ *       - Companies
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Company deleted successfully
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Company not found
+ */
 router.delete(
   '/:id',
   authenticate,

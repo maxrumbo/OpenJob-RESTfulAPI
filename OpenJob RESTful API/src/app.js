@@ -1,7 +1,9 @@
 const express = require('express');
 const cors = require('cors');
+const swaggerUi = require('swagger-ui-express');
 
 const errorHandler = require('./middlewares/errorHandler');
+const swaggerSpec = require('./swagger');
 const usersRoutes = require('./routes/users');
 const authenticationsRoutes = require('./routes/authentications');
 const companiesRoutes = require('./routes/companies');
@@ -17,6 +19,17 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static('uploads'));
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  swaggerOptions: {
+    url: '/api-docs/swagger.json',
+  },
+}));
+
+app.get('/api-docs/swagger.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerSpec);
+});
 
 app.get('/', (req, res) => {
   res.json({

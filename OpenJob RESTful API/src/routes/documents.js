@@ -8,6 +8,17 @@ const DocumentService = require('../services/DocumentService');
 
 const router = express.Router();
 
+/**
+ * @swagger
+ * /documents:
+ *   get:
+ *     summary: Get all documents
+ *     tags:
+ *       - Documents
+ *     responses:
+ *       200:
+ *         description: List of documents
+ */
 router.get(
   '/',
   asyncHandler(async (req, res) => {
@@ -22,6 +33,35 @@ router.get(
   }),
 );
 
+/**
+ * @swagger
+ * /documents:
+ *   post:
+ *     summary: Upload a document
+ *     tags:
+ *       - Documents
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - document
+ *             properties:
+ *               document:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       201:
+ *         description: Document uploaded successfully
+ *       401:
+ *         description: Unauthorized
+ *       400:
+ *         description: Invalid file format
+ */
 router.post(
   '/',
   authenticate,
@@ -42,6 +82,27 @@ router.post(
   }),
 );
 
+/**
+ * @swagger
+ * /documents/{id}:
+ *   get:
+ *     summary: Get/Download document by ID
+ *     tags:
+ *       - Documents
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Document file
+ *         content:
+ *           application/octet-stream: {}
+ *       404:
+ *         description: Document not found
+ */
 router.get(
   '/:id',
   asyncHandler(async (req, res) => {
@@ -54,6 +115,29 @@ router.get(
   }),
 );
 
+/**
+ * @swagger
+ * /documents/{id}:
+ *   delete:
+ *     summary: Delete document by ID
+ *     tags:
+ *       - Documents
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Document deleted successfully
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Document not found
+ */
 router.delete(
   '/:id',
   authenticate,

@@ -10,6 +10,33 @@ const { jobSchema, updateJobSchema, jobSearchQuerySchema } = require('../validat
 
 const router = express.Router();
 
+/**
+ * @swagger
+ * /jobs:
+ *   get:
+ *     summary: Get all jobs (with optional filters)
+ *     tags:
+ *       - Jobs
+ *     parameters:
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: Search by job title
+ *       - in: query
+ *         name: category
+ *         schema:
+ *           type: string
+ *         description: Filter by category
+ *       - in: query
+ *         name: company
+ *         schema:
+ *           type: string
+ *         description: Filter by company
+ *     responses:
+ *       200:
+ *         description: List of jobs
+ */
 router.get(
   '/',
   validate(jobSearchQuerySchema, 'query'),
@@ -25,6 +52,44 @@ router.get(
   }),
 );
 
+/**
+ * @swagger
+ * /jobs:
+ *   post:
+ *     summary: Create a new job posting
+ *     tags:
+ *       - Jobs
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - title
+ *               - description
+ *               - category_id
+ *               - company_id
+ *             properties:
+ *               title:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               category_id:
+ *                 type: string
+ *               company_id:
+ *                 type: string
+ *               status:
+ *                 type: string
+ *                 enum: [active, inactive, closed]
+ *     responses:
+ *       201:
+ *         description: Job created successfully
+ *       401:
+ *         description: Unauthorized
+ */
 router.post(
   '/',
   authenticate,
@@ -42,6 +107,25 @@ router.post(
   }),
 );
 
+/**
+ * @swagger
+ * /jobs/company/{companyId}:
+ *   get:
+ *     summary: Get jobs by company ID
+ *     tags:
+ *       - Jobs
+ *     parameters:
+ *       - in: path
+ *         name: companyId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: List of jobs for the company
+ *       404:
+ *         description: Company not found
+ */
 router.get(
   '/company/:companyId',
   asyncHandler(async (req, res) => {
@@ -56,6 +140,25 @@ router.get(
   }),
 );
 
+/**
+ * @swagger
+ * /jobs/category/{categoryId}:
+ *   get:
+ *     summary: Get jobs by category ID
+ *     tags:
+ *       - Jobs
+ *     parameters:
+ *       - in: path
+ *         name: categoryId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: List of jobs in the category
+ *       404:
+ *         description: Category not found
+ */
 router.get(
   '/category/:categoryId',
   asyncHandler(async (req, res) => {
@@ -70,6 +173,27 @@ router.get(
   }),
 );
 
+/**
+ * @swagger
+ * /jobs/{jobId}/bookmark:
+ *   post:
+ *     summary: Add a job bookmark
+ *     tags:
+ *       - Jobs
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: jobId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       201:
+ *         description: Bookmark added successfully
+ *       401:
+ *         description: Unauthorized
+ */
 router.post(
   '/:jobId/bookmark',
   authenticate,
@@ -87,6 +211,32 @@ router.post(
   }),
 );
 
+/**
+ * @swagger
+ * /jobs/{jobId}/bookmark/{id}:
+ *   get:
+ *     summary: Get bookmark details
+ *     tags:
+ *       - Jobs
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: jobId
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Bookmark details
+ *       404:
+ *         description: Bookmark not found
+ */
 router.get(
   '/:jobId/bookmark/:id',
   authenticate,
@@ -104,6 +254,29 @@ router.get(
   }),
 );
 
+/**
+ * @swagger
+ * /jobs/{jobId}/bookmark:
+ *   delete:
+ *     summary: Remove a job bookmark
+ *     tags:
+ *       - Jobs
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: jobId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Bookmark removed successfully
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Bookmark not found
+ */
 router.delete(
   '/:jobId/bookmark',
   authenticate,
@@ -118,6 +291,25 @@ router.delete(
   }),
 );
 
+/**
+ * @swagger
+ * /jobs/{id}:
+ *   get:
+ *     summary: Get job details by ID
+ *     tags:
+ *       - Jobs
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Job details
+ *       404:
+ *         description: Job not found
+ */
 router.get(
   '/:id',
   asyncHandler(async (req, res) => {
@@ -130,6 +322,42 @@ router.get(
   }),
 );
 
+/**
+ * @swagger
+ * /jobs/{id}:
+ *   put:
+ *     summary: Update job posting by ID
+ *     tags:
+ *       - Jobs
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               status:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Job updated successfully
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Job not found
+ */
 router.put(
   '/:id',
   authenticate,
@@ -144,6 +372,29 @@ router.put(
   }),
 );
 
+/**
+ * @swagger
+ * /jobs/{id}:
+ *   delete:
+ *     summary: Delete job posting by ID
+ *     tags:
+ *       - Jobs
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Job deleted successfully
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Job not found
+ */
 router.delete(
   '/:id',
   authenticate,

@@ -10,6 +10,21 @@ const router = express.Router();
 
 router.use(authenticate);
 
+/**
+ * @swagger
+ * /profile:
+ *   get:
+ *     summary: Get current user profile
+ *     tags:
+ *       - Profile
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Current user profile
+ *       401:
+ *         description: Unauthorized
+ */
 router.get(
   '/',
   asyncHandler(async (req, res) => {
@@ -22,6 +37,21 @@ router.get(
   }),
 );
 
+/**
+ * @swagger
+ * /profile/applications:
+ *   get:
+ *     summary: Get current user applications
+ *     tags:
+ *       - Profile
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of user applications with details
+ *       401:
+ *         description: Unauthorized
+ */
 router.get(
   '/applications',
   asyncHandler(async (req, res) => {
@@ -40,6 +70,21 @@ router.get(
   }),
 );
 
+/**
+ * @swagger
+ * /profile/bookmarks:
+ *   get:
+ *     summary: Get current user bookmarks
+ *     tags:
+ *       - Profile
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of user bookmarked jobs
+ *       401:
+ *         description: Unauthorized
+ */
 router.get(
   '/bookmarks',
   asyncHandler(async (req, res) => {

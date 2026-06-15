@@ -10,6 +10,64 @@ const { loginSchema, refreshTokenSchema } = require('../validators/authenticatio
 
 const router = express.Router();
 
+/**
+ * @swagger
+ * /authentications:
+ *   post:
+ *     summary: User login (Authentication)
+ *     tags:
+ *       - Authentication
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - password
+ *             anyOf:
+ *               - required:
+ *                   - email
+ *               - required:
+ *                   - username
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: "user@example.com"
+ *               username:
+ *                 type: string
+ *                 example: "johndoe"
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: "password123"
+ *     responses:
+ *       200:
+ *         description: Authentication successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "success"
+ *                 message:
+ *                   type: string
+ *                   example: "Authentication berhasil ditambahkan"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     accessToken:
+ *                       type: string
+ *                       example: "eyJhbGc..."
+ *                     refreshToken:
+ *                       type: string
+ *                       example: "eyJhbGc..."
+ *       401:
+ *         description: Invalid credentials
+ */
 router.post(
   '/',
   validate(loginSchema),
@@ -32,6 +90,47 @@ router.post(
   }),
 );
 
+/**
+ * @swagger
+ * /authentications:
+ *   put:
+ *     summary: Refresh access token
+ *     tags:
+ *       - Authentication
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - refreshToken
+ *             properties:
+ *               refreshToken:
+ *                 type: string
+ *                 example: "eyJhbGc..."
+ *     responses:
+ *       200:
+ *         description: Token refreshed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "success"
+ *                 message:
+ *                   type: string
+ *                   example: "Access token berhasil diperbarui"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     accessToken:
+ *                       type: string
+ *       400:
+ *         description: Invalid refresh token
+ */
 router.put(
   '/',
   validate(refreshTokenSchema),
@@ -51,6 +150,44 @@ router.put(
   }),
 );
 
+/**
+ * @swagger
+ * /authentications:
+ *   delete:
+ *     summary: User logout
+ *     tags:
+ *       - Authentication
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - refreshToken
+ *             properties:
+ *               refreshToken:
+ *                 type: string
+ *                 example: "eyJhbGc..."
+ *     responses:
+ *       200:
+ *         description: Logout successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "success"
+ *                 message:
+ *                   type: string
+ *                   example: "Refresh token berhasil dihapus"
+ *       401:
+ *         description: Unauthorized
+ */
 router.delete(
   '/',
   authenticate,

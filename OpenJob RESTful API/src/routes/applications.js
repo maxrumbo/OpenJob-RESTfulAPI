@@ -15,6 +15,36 @@ const router = express.Router();
 
 router.use(authenticate);
 
+/**
+ * @swagger
+ * /applications:
+ *   post:
+ *     summary: Submit a job application
+ *     tags:
+ *       - Applications
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - jobId
+ *             properties:
+ *               jobId:
+ *                 type: string
+ *               job_id:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Application submitted successfully
+ *       401:
+ *         description: Unauthorized
+ *       400:
+ *         description: Invalid job ID
+ */
 router.post(
   '/',
   validate(createApplicationSchema),
@@ -44,6 +74,21 @@ router.post(
   }),
 );
 
+/**
+ * @swagger
+ * /applications:
+ *   get:
+ *     summary: Get all applications (admin)
+ *     tags:
+ *       - Applications
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of all applications
+ *       401:
+ *         description: Unauthorized
+ */
 router.get(
   '/',
   asyncHandler(async (req, res) => {
@@ -58,6 +103,27 @@ router.get(
   }),
 );
 
+/**
+ * @swagger
+ * /applications/user/{userId}:
+ *   get:
+ *     summary: Get user applications
+ *     tags:
+ *       - Applications
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: User applications
+ *       401:
+ *         description: Unauthorized
+ */
 router.get(
   '/user/:userId',
   asyncHandler(async (req, res) => {
@@ -85,6 +151,27 @@ router.get(
   }),
 );
 
+/**
+ * @swagger
+ * /applications/job/{jobId}:
+ *   get:
+ *     summary: Get applications for a job
+ *     tags:
+ *       - Applications
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: jobId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Job applications
+ *       401:
+ *         description: Unauthorized
+ */
 router.get(
   '/job/:jobId',
   asyncHandler(async (req, res) => {
@@ -112,6 +199,29 @@ router.get(
   }),
 );
 
+/**
+ * @swagger
+ * /applications/{id}:
+ *   get:
+ *     summary: Get application details by ID
+ *     tags:
+ *       - Applications
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Application details
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Application not found
+ */
 router.get(
   '/:id',
   asyncHandler(async (req, res) => {
@@ -135,6 +245,41 @@ router.get(
   }),
 );
 
+/**
+ * @swagger
+ * /applications/{id}:
+ *   put:
+ *     summary: Update application status
+ *     tags:
+ *       - Applications
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - status
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 enum: [pending, accepted, rejected]
+ *     responses:
+ *       200:
+ *         description: Application status updated
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Application not found
+ */
 router.put(
   '/:id',
   validate(updateApplicationSchema),

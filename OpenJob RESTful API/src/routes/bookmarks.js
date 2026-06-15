@@ -7,6 +7,21 @@ const CacheService = require('../services/CacheService');
 
 const router = express.Router();
 
+/**
+ * @swagger
+ * /bookmarks:
+ *   get:
+ *     summary: Get user bookmarks
+ *     tags:
+ *       - Bookmarks
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of user bookmarks
+ *       401:
+ *         description: Unauthorized
+ */
 router.get(
   '/',
   authenticate,
@@ -35,6 +50,32 @@ router.get(
   }),
 );
 
+/**
+ * @swagger
+ * /bookmarks:
+ *   post:
+ *     summary: Add a job bookmark
+ *     tags:
+ *       - Bookmarks
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - jobId
+ *             properties:
+ *               jobId:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Bookmark added successfully
+ *       401:
+ *         description: Unauthorized
+ */
 router.post(
   '/',
   authenticate,
@@ -50,6 +91,30 @@ router.post(
   }),
 );
 
+/**
+ * @swagger
+ * /bookmarks/{id}:
+ *   delete:
+ *     summary: Remove a bookmark
+ *     tags:
+ *       - Bookmarks
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Bookmark ID
+ *     responses:
+ *       200:
+ *         description: Bookmark removed successfully
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Bookmark not found
+ */
 router.delete(
   '/:id',
   authenticate,
